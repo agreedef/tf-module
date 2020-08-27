@@ -1,3 +1,5 @@
+# module 의 리소스를 정의한다.
+
 resource "aws_vpc" "this" {
   cidr_block           = var.cidr
   enable_dns_hostnames = true
@@ -105,6 +107,49 @@ resource "aws_default_security_group" "dev_default" {
   tags = merge(var.tags, map("Name", format("%s-default", var.name)))
 }
 
+resource "aws_security_group" "staging_bastion" {
+  vpc_id = aws_vpc.this.id
+  name = format("%s-bastion", var.name)
+  
+  ingress {
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 22
+    to_port   = 22
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(var.tags, map("Name", format("%s-bastion", var.name)))
+
+}
+
+resource "aws_security_group" "staging_web" {
+  vpc_id = aws_vpc.this.id
+  name = format("%s-web", var.name)
+
+  ingress {
+    protocol  = "tcp"
+    cidr_blocks = [var.cidr]
+    from_port = 22
+    to_port   = 22
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(var.tags, map("Name", format("%s-web", var.name)))
+
+}
 
 ########### Subnet ###########
 resource "aws_subnet" "public" {

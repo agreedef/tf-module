@@ -1,3 +1,5 @@
+# module 을 사용할 때 입력받는 variable 변수를 정의한다.
+
 variable "name" {
   description = "모듈에서 정의하는 모든 리소스 이름의 prefix"
 }

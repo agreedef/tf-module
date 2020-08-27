@@ -1,3 +1,5 @@
+# 외부에서 module 에 접근해서 사용할 output 변수를 정의한다.
+
 ########### VPC ###########
 output "vpc_id" {
   description = "VPC ID"
