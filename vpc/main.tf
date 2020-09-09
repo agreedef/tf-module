@@ -151,6 +151,29 @@ resource "aws_security_group" "staging_web" {
 
 }
 
+resource "aws_security_group" "staging_alb" {
+  vpc_id = aws_vpc.this.id
+  name = format("%s-alb", var.name)
+
+  ingress {
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 80
+    to_port   = 80
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(var.tags, map("Name", format("%s-alb", var.name)))
+
+}
+
+
 ########### Subnet ###########
 resource "aws_subnet" "public" {
   count = length(var.public_subnets)
